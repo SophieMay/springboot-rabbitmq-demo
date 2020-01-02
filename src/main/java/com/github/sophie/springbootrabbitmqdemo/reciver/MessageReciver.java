@@ -1,7 +1,13 @@
 package com.github.sophie.springbootrabbitmqdemo.reciver;
 
-import com.alibaba.fastjson.JSONObject;
+import com.github.sophie.springbootrabbitmqdemo.constant.MqConstant;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Map;
 
 /**
  * reciver
@@ -12,7 +18,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessageReciver {
 
-    public void process(JSONObject mes) {
+    @RabbitListener(bindings = @QueueBinding(
+            exchange = @Exchange(value = MqConstant.QUEUE_EXCHANGE_NAME, type = "topic"),
+            value = @Queue(value = MqConstant.QUEUE_NAME),
+            key = MqConstant.QUEUE_ROUTING_KEY
+    ))
+    public void process(Map<String, Object> mes) {
         if (null == mes) {
             System.out.println("mes 为空");
         } else {
